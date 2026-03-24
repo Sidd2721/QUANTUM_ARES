@@ -1,25 +1,77 @@
+# ── Python ──────────────────────────────────────────────────────────────
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+.eggs/
+
+# ── Virtual environment ──────────────────────────────────────────────────
 venv/
 .venv/
+
+# ── Database (NEVER commit) ──────────────────────────────────────────────
 *.db
 *.db-shm
 *.db-wal
-backend/app/data/private_key.pem
-backend/app/data/public_key.pem
-private_key.pem
-public_key.pem
+
+# ── Secrets ──────────────────────────────────────────────────────────────
 .env
-.env.*
+.env.local
+.env.production
+*.env
 token.json
-backend/debug_*.py
-backend/test_*.py
-backend/verify_*.py
+keygen.py
+
+# ── Generated reports / PDFs ─────────────────────────────────────────────
+*.pdf
+gate5_final.pdf
+
+# ── Test artifacts ───────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+coverage.xml
+*.txt
+!README.txt
+!requirements.txt
+!backend/app/data/*.txt
+
+# ── Debug / diagnostic scripts (NEVER commit these) ──────────────────────
+cors_check.py
+day6_auto.py
+debug_*.py
+dep_check.py
+final_diag.py
+quick_check.py
+quality_scan.py
+test_httpx.py
+test_script.py
+verify_*.py
 import_check.py
-generate_report.py
+generate_report.*
+diag*.py
+check*.py
+gate*.py
+e2e*.py
+render_verify.py
+airgap_test.py
 tree_output.txt
-stubs_backup/
+*.ps1
+
+# ── Frontend ─────────────────────────────────────────────────────────────
 node_modules/
 frontend/dist/
+frontend/.vite/
+
+# ── OS ───────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ──────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
+*.swp
+
+# ── Old P1/P2 folders ────────────────────────────────────────────────────
+Quantum_Ares P1/
+Quantum_Ares P2/
+stubs_backup/

@@ -134,8 +134,13 @@ export function ChatPanel({ scanId }: { scanId: string }) {
                {msg.role === 'assistant' && (
                  <div className="flex flex-wrap items-center gap-3 mt-2 px-1">
                    {msg.tier && (
-                     <span className="font-['JetBrains_Mono'] text-[10px] text-[var(--text-muted)] flex items-center gap-1 px-1.5 py-0.5 bg-[var(--bg-elevated)] rounded border border-[var(--border-default)]">
-                       <Zap className="w-2.5 h-2.5 text-[var(--cyan-400)]" /> {msg.tier}
+                     <span className={`font-['JetBrains_Mono'] text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded border ${
+                       msg.tier === 'semantic' 
+                         ? 'bg-[var(--low-bg)] text-[var(--low)] border-[var(--low)]/30' 
+                         : 'bg-[var(--bg-elevated)] text-[var(--text-muted)] border-[var(--border-default)]'
+                     }`}>
+                       <Zap className={`w-2.5 h-2.5 ${msg.tier === 'semantic' ? 'text-[var(--low)]' : 'text-[var(--cyan-400)]'}`} /> 
+                       {msg.tier === 'semantic' ? 'Source Verified (NIST/DPDP)' : msg.tier}
                      </span>
                    )}
                    {msg.source && (

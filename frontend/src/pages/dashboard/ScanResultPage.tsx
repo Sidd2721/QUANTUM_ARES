@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { BarChart3, Network, AlertTriangle, Zap, MessageSquare, FileText, Download } from 'lucide-react';
 import axios from 'axios';
+import { motion } from 'motion/react';
 
 import { ScorePanel } from '../../components/panels/ScorePanel';
 import { GraphPanel } from '../../components/panels/GraphPanel';
@@ -59,7 +60,7 @@ export function ScanResultPage() {
     <div className="flex flex-col h-full bg-[var(--bg-base)] text-[var(--text-primary)] relative">
       
       {/* Sticky Header (72px) */}
-      <div className="sticky top-0 z-10 w-full h-[72px] bg-[var(--bg-base)]/90 backdrop-blur-md border-b border-[var(--border-subtle)] flex items-center justify-between px-8 shrink-0">
+      <div className="sticky top-0 z-10 w-full h-[72px] bg-[var(--bg-surface)] backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-8 shrink-0">
         
         {/* Left: Metadata */}
         <div className="flex flex-col">
@@ -123,14 +124,20 @@ export function ScanResultPage() {
       </div>
 
       {/* Tab Content Panels */}
-      <div className="flex-1 overflow-y-auto w-full relative">
+      <motion.div 
+        key={activeTab}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="flex-1 overflow-y-auto w-full relative"
+      >
         {activeTab === 'score' && <ScorePanel scan={scan} />}
         {activeTab === 'graph' && <GraphPanel scan={scan} />}
         {activeTab === 'violations' && <ViolationsPanel scan={scan} patches={patches} />}
         {activeTab === 'quantum' && <QuantumRiskPanel scan={scan} />}
         {activeTab === 'chat' && <ChatPanel scanId={scanId!} />}
         {activeTab === 'report' && <ReportPanel scan={scan} />}
-      </div>
+      </motion.div>
 
     </div>
   );

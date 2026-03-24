@@ -1,5 +1,6 @@
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router';
 import { BarChart2, Clock, Upload, FileText, LogOut, Bell, Moon } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export function DashboardShell() {
   const navigate = useNavigate();
@@ -25,7 +26,11 @@ export function DashboardShell() {
     <div className="flex h-screen w-full bg-[var(--bg-base)] text-[var(--text-primary)] font-['DM_Sans'] overflow-hidden">
       
       {/* Sidebar (240px) */}
-      <div className="w-[240px] flex-shrink-0 bg-[var(--bg-surface)] border-r border-[var(--border-subtle)] flex flex-col h-full z-20">
+      <motion.div 
+        initial={{ x: -250 }}
+        animate={{ x: 0 }}
+        className="w-[240px] flex-shrink-0 bg-[var(--bg-surface)] backdrop-blur-xl border-r border-white/10 flex flex-col h-full z-20"
+      >
         
         {/* Top: Logo section */}
         <div className="h-[56px] flex items-center px-4 border-b border-[var(--border-subtle)] shrink-0 group hover:bg-[var(--bg-elevated)] transition-colors cursor-default">
@@ -47,29 +52,38 @@ export function DashboardShell() {
         </div>
 
         {/* Main Navigation */}
-        <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+        <motion.nav 
+          className="flex-1 px-3 py-2 space-y-1 overflow-y-auto"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
+          }}
+        >
           {[
             { to: '/dashboard/overview', icon: <BarChart2 className="w-4 h-4" strokeWidth={1.5} />, label: 'Overview' },
             { to: '/dashboard/history', icon: <Clock className="w-4 h-4" strokeWidth={1.5} />, label: 'History' },
             { to: '/dashboard/upload', icon: <Upload className="w-4 h-4" strokeWidth={1.5} />, label: 'Upload' },
             { to: '/dashboard/reports', icon: <FileText className="w-4 h-4" strokeWidth={1.5} />, label: 'Reports' },
           ].map((navItems) => (
-            <NavLink
-              key={navItems.to}
-              to={navItems.to}
-              className={({ isActive }) =>
-                `flex items-center gap-3 h-10 px-3 rounded-lg text-[13px] font-medium transition-all ${
-                  isActive 
-                  ? 'bg-[var(--cyan-glow)] border-l-[3px] border-[var(--cyan-400)] text-[var(--cyan-400)] rounded-l-sm' 
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)] border-l-[3px] border-transparent'
-                }`
-              }
-            >
-              {navItems.icon}
-              {navItems.label}
-            </NavLink>
+            <motion.div key={navItems.to} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+              <NavLink
+                to={navItems.to}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 h-10 px-3 rounded-lg text-[13px] font-medium transition-all ${
+                    isActive 
+                    ? 'bg-[var(--cyan-glow)] border-l-[3px] border-[var(--cyan-400)] text-[var(--cyan-400)] rounded-l-sm' 
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)] border-l-[3px] border-transparent'
+                  }`
+                }
+              >
+                {navItems.icon}
+                {navItems.label}
+              </NavLink>
+            </motion.div>
           ))}
-        </nav>
+        </motion.nav>
 
         {/* Bottom: User Section */}
         <div className="h-14 shrink-0 border-t border-[var(--border-subtle)] px-4 flex items-center justify-between hover:bg-[var(--bg-elevated)] transition-colors">
@@ -87,7 +101,7 @@ export function DashboardShell() {
           </button>
         </div>
 
-      </div>
+      </motion.div>
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full bg-[var(--bg-base)] relative overflow-hidden">

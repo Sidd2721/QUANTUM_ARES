@@ -1,7 +1,20 @@
 import { motion } from "motion/react";
 import { Wand2, Loader2, CheckCircle, Code } from "lucide-react";
 import { useState } from "react";
-import { getPatches, downloadPatches } from "../../lib/api";
+import axios from "axios";
+
+const getPatches = async (scanId: string) => {
+  const token = localStorage.getItem('qa_token');
+  const res = await axios.get(`/api/v1/scans/${scanId}/patches`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+};
+
+const downloadPatches = (scanId: string) => {
+  const token = localStorage.getItem('qa_token');
+  window.open(`/api/v1/scans/${scanId}/patches?format=download&token=${token}`, '_blank');
+};
 
 interface AutoFixPanelProps {
   onFix: () => void;

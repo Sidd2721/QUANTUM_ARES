@@ -55,6 +55,8 @@ export function UploadPage() {
         }
         if (data.status === 'failed') {
           clearInterval(interval);
+          setUploading(false);
+          alert('Validation failed: The uploaded file could not be parsed or processed.');
         }
       } catch (err) {
         console.error("Polling error", err);

@@ -1,11 +1,11 @@
-export { ScoreDashboard } from "./ScoreDashboard";
-export { GraphView } from "./GraphView";
-export { ViolationPanel } from "./ViolationPanel";
+export { ScorePanel } from "./ScorePanel";
+export { GraphPanel } from "./GraphPanel";
+export { ViolationsPanel } from "./ViolationsPanel";
 export { AIOpinionPanel } from "./AIOpinionPanel";
 export { ConfidencePanel } from "./ConfidencePanel";
 export { AutoFixPanel } from "./AutoFixPanel";
-export { QuantumPanel } from "./QuantumPanel";
+export { QuantumRiskPanel } from "./QuantumRiskPanel";
 export { SupplyChainPanel } from "./SupplyChainPanel";
-export { ChatInterface } from "./ChatInterface";
+export { ChatPanel } from "./ChatPanel";
 export { ComplianceRadar } from "./ComplianceRadar";
-export { ReportViewer } from "./ReportViewer";
+export { ReportPanel } from "./ReportPanel";

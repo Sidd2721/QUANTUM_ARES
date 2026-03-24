@@ -115,6 +115,8 @@ async def validate(
     if len(raw_text.strip()) < 10:
         raise HTTPException(status_code=400, detail='Uploaded file is too small or empty')
 
+    logger.info(f"[API] Validate received raw_text head: {raw_text[:100]}")
+
     # Validate evidence_source
     valid_sources = {'manual', 'json', 'yaml', 'terraform', 'aws_config', 'k8s', 'nmap'}
     if evidence_source not in valid_sources:
@@ -172,7 +174,7 @@ def get_scan_result(scan_id: str, auth=Depends(get_current_org)):
     if not scan:
         raise HTTPException(status_code=404, detail='Scan not found')
 
-    if scan['status'] != 'complete':
+    if scan['status'] not in ('complete', 'completed'):
         return {
             'scan_id': scan_id,
             'status':  scan['status'],
@@ -220,7 +222,7 @@ def get_scan_opinion(scan_id: str, auth=Depends(get_current_org)):
     scan = get_scan(scan_id, auth['org_id'])
     if not scan:
         raise HTTPException(status_code=404, detail='Scan not found')
-    if scan['status'] != 'complete':
+    if scan['status'] not in ('complete', 'completed'):
         return {'status': scan['status'], 'message': 'Scan not yet complete'}
 
     findings_with_opinion = [
@@ -258,7 +260,7 @@ def get_patches(
     scan = get_scan(scan_id, auth['org_id'])
     if not scan:
         raise HTTPException(status_code=404, detail='Scan not found')
-    if scan['status'] != 'complete':
+    if scan['status'] not in ('complete', 'completed'):
         raise HTTPException(
             status_code=400,
             detail=f'Scan not yet complete — status is "{scan["status"]}". Patches available after completion.'
@@ -376,18 +378,21 @@ async def generate_report(scan_id: str, auth=Depends(get_current_org)):
             detail=f'Scan is not complete (status={scan.get("status")})'
         )
 
-    # Build the PDF
+    # Pass 1: Build the PDF to get byte representation for signing
     pdf_bytes = build_pdf(scan, org_name=auth.get('name', 'Organisation'))
 
-    # Sign the PDF
+    # Sign the raw PDF byte stream
     sig_data = sign_pdf(pdf_bytes)
+
+    # Pass 2: Re-build PDF injecting the signature into the footer
+    final_pdf_bytes = build_pdf(scan, org_name=auth.get('name', 'Organisation'), signature=sig_data['sig_b64'])
 
     # Store in DB
     conn = get_db()
     report_id = create_report(conn, scan_id=scan_id, org_id=auth['org_id'])
     update_report(
         conn, report_id,
-        pdf_bytes=pdf_bytes,
+        pdf_bytes=final_pdf_bytes,
         sha256=sig_data['sha256'],
         sig_b64=sig_data['sig_b64'],
         pub_pem=sig_data['pub_pem'],
