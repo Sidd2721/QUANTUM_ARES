@@ -1,0 +1,102 @@
+[
+  {
+    "question": "Why is our QVI high?",
+    "answer": "Your Quantum Vulnerability Index (QVI) is high because one or more nodes use encryption algorithms vulnerable to quantum decryption (e.g., RSA-2048, ECC-256) and store data for many years. Nation-states may be recording your encrypted data today to decrypt it once quantum computers are available — the HNDL (Harvest-Now-Decrypt-Later) threat. Migrate to ML-KEM-768 per NIST FIPS 203 (published August 2024).",
+    "source": "NIST FIPS 203 §4 — ML-KEM Key Encapsulation Mechanism"
+  },
+  {
+    "question": "What is Zero Trust Architecture?",
+    "answer": "Zero Trust Architecture (ZTA) is a security model defined in NIST SP 800-207 that assumes no implicit trust based on network location. Every request must be authenticated and authorised, regardless of whether it originates inside or outside the network perimeter. Core principles: verify explicitly, use least privilege access, assume breach.",
+    "source": "NIST SP 800-207 §2 — Zero Trust Architecture"
+  },
+  {
+    "question": "What does DPDP Act 2023 require?",
+    "answer": "The Digital Personal Data Protection Act 2023 requires Data Fiduciaries to implement appropriate technical and organisational measures to protect personal data. Section 8(3) specifically mandates reasonable security safeguards to prevent personal data breaches. Non-compliance can result in penalties up to ₹250 Crore per breach.",
+    "source": "DPDP Act 2023 Section 8(3) — Obligations of Data Fiduciary"
+  },
+  {
+    "question": "What is MFA and why is it required?",
+    "answer": "Multi-Factor Authentication (MFA) requires users to provide two or more verification factors to access a resource. NIST SP 800-207 control IA-2 mandates MFA for access to HIGH and CRITICAL sensitivity resources. Without MFA, stolen credentials alone grant full access to sensitive data.",
+    "source": "NIST SP 800-207 IA-2 — Identification and Authentication"
+  },
+  {
+    "question": "What is encryption at rest?",
+    "answer": "Encryption at rest protects stored data from unauthorised access if the storage medium is compromised. NIST SP 800-207 control SC-28 requires protection of information at rest. DPDP Act 2023 Section 8(3) mandates technical measures including encryption. Minimum standard: AES-256.",
+    "source": "NIST SP 800-207 SC-28 — Protection of Information at Rest"
+  },
+  {
+    "question": "What is an attack path?",
+    "answer": "An attack path is a sequence of nodes from a PUBLIC-zone entry point to a HIGH or CRITICAL-sensitivity target, where each hop can be traversed due to misconfiguration (missing authentication, no TLS, wildcard IAM). QUANTUM-ARES scores paths using a CVSS v3.1-inspired risk formula accounting for unauthenticated hops, known CVE exploits, and blast radius.",
+    "source": "NIST SP 800-207 CA-7 — Continuous Monitoring"
+  },
+  {
+    "question": "What is RBI Master Direction on IT Risk?",
+    "answer": "The RBI Master Direction on IT Risk and Cyber Security Framework requires regulated entities (banks, NBFCs) to implement network access controls, data encryption standards, and continuous monitoring. Direction 4.2 specifically mandates encryption of data in transit and at rest, and network segmentation between different security zones.",
+    "source": "RBI Master Direction on IT Risk — Direction 4.2"
+  },
+  {
+    "question": "What is the Security Index?",
+    "answer": "The Security Index is a 0-100 score calculated as: ZT×0.35 + (100-QVI)×0.20 + AP×0.25 + SC×0.10 + Compliance×0.10. Weights reference published frameworks: ZT 35% (NIST SP 800-207), AP 25% (CVSS exploitability analogy), QVI 20% (HNDL threat), SC 10% (EO 14028 SBOM), Compliance 10% (DPDP/RBI/NIST). Every deduction is traceable to a specific finding.",
+    "source": "QUANTUM-ARES Security Index Formula — NIST SP 800-207 basis"
+  },
+  {
+    "question": "What is the confidence model?",
+    "answer": "The Confidence Model assigns trust levels to input evidence sources: Terraform (0.95), AWS Config (0.90), Kubernetes (0.85), Nmap scan (0.80), JSON (0.60), manual (0.30). For confidence below 0.70, all positive security claims (auth_required, mfa_required, tls_enforced) are automatically flipped to False — the conservative 'assume breach' interpretation. You cannot fool the scanner by writing mfa_required: true in an untrusted source.",
+    "source": "QUANTUM-ARES Confidence Model — NIST SP 800-207 Assume Breach principle"
+  },
+  {
+    "question": "What is a supply chain vulnerability?",
+    "answer": "A supply chain vulnerability is a known CVE (Common Vulnerability and Exposure) present in a deployed container image or software component. QUANTUM-ARES cross-references container images against a curated NVD (National Vulnerability Database) snapshot. Example: nginx:1.20.1 has CVE-2021-23017, a buffer overflow with CVSS 9.8 enabling remote code execution.",
+    "source": "US Executive Order 14028 — SBOM and Supply Chain Security"
+  },
+  {
+    "question": "What is least privilege?",
+    "answer": "Least privilege means granting only the minimum access rights required to perform a function. NIST SP 800-207 control AC-6 requires least privilege access. In QUANTUM-ARES, ZT-005 flags wildcard IAM roles (* permissions) and ZT-010 flags FULL access scope on edges from non-admin nodes. Both violate least privilege.",
+    "source": "NIST SP 800-207 AC-6 — Least Privilege"
+  },
+  {
+    "question": "How does the attack path engine work?",
+    "answer": "The attack path engine uses BFS (Breadth-First Search) to find all simple paths from PUBLIC-zone nodes to HIGH/CRITICAL-sensitivity targets within 6 hops. Each path is scored using a risk formula: ×3 for unauthenticated hops, ×2 for nodes with known CVE exploits, ×(1+CVSS/10) per hop's target. Technique mapping is CVE-first using MITRE ATT&CK, not zone-type lookup.",
+    "source": "NIST SP 800-207 CA-7 — Continuous Monitoring, MITRE ATT&CK"
+  },
+  {
+    "question": "What is blast radius?",
+    "answer": "Blast radius measures how many nodes a compromised node can reach downstream. Calculated as (number of descendant nodes / total nodes) × 100. Used by the AI Opinion Model: blast radius > 40% = SYSTEM-WIDE impact, > 15% = HIGH impact. Central nodes in the graph have higher blast radius and generate higher-priority findings.",
+    "source": "QUANTUM-ARES AI Opinion Model — graph-aware impact estimation"
+  },
+  {
+    "question": "What does the AI opinion model do?",
+    "answer": "The AI Opinion Model attaches reasoning to every finding: (1) estimate_impact() uses blast radius to determine SYSTEM-WIDE/HIGH/LOCAL scope, (2) estimate_likelihood() uses confidence level and CVE exploit availability, (3) calculate_priority() = impact × likelihood, (4) build_attack_story() generates plain English narrative. Fully deterministic — no LLM, zero hallucination risk.",
+    "source": "QUANTUM-ARES AI Opinion Model — deterministic reasoning layer"
+  },
+  {
+    "question": "What is MITRE ATT&CK?",
+    "answer": "MITRE ATT&CK is a globally accessible knowledge base of adversary tactics and techniques based on real-world observations. QUANTUM-ARES maps every finding to a specific ATT&CK technique: T1190 (Exploit Public-Facing Application), T1078 (Valid Accounts), T1530 (Data from Cloud Storage). Technique selection is CVE-first — a finding from nginx:1.20.1 maps to T1190 because CVE-2021-23017 is a public exploit, not because nginx is in a PUBLIC zone.",
+    "source": "MITRE ATT&CK Framework — https://attack.mitre.org"
+  },
+  {
+    "question": "What is TLS and why enforce it?",
+    "answer": "TLS (Transport Layer Security) encrypts data in transit between nodes, preventing interception and tampering. NIST SP 800-207 control SC-8 requires transmission confidentiality. DPDP Act 2023 Section 8(3) mandates technical measures for data in transit. Minimum version: TLS 1.3. ZT-007 flags all edges to HIGH/CRITICAL nodes without tls_enforced=true.",
+    "source": "NIST SP 800-207 SC-8 — Transmission Confidentiality and Integrity"
+  },
+  {
+    "question": "How is the report signed?",
+    "answer": "QUANTUM-ARES generates a SHA-256 hash of the PDF bytes, then signs it with RSA-2048 using PKCS1v15 padding and SHA-256. The hash, signature, and public key PEM are stored in the reports table. Optionally, the hash is anchored on the Polygon blockchain for immutable proof. No one — not even CERT-In — can alter the report without breaking the signature.",
+    "source": "QUANTUM-ARES Report Signing — RSA-2048 PKCS1v15, SHA-256"
+  },
+  {
+    "question": "What is network segmentation?",
+    "answer": "Network segmentation divides an infrastructure into security zones (PUBLIC, DMZ, PRIVATE, RESTRICTED) with controlled access between zones. NIST SP 800-207 core tenet. QUANTUM-ARES validates zone boundaries: ZT-001 catches PUBLIC→PRIVATE without auth, ZT-008 catches DMZ→PRIVATE without auth. Proper segmentation limits an attacker's lateral movement even after initial compromise.",
+    "source": "NIST SP 800-207 §3 — Zero Trust Architecture Tenets"
+  },
+  {
+    "question": "What is CVE-2021-23017?",
+    "answer": "CVE-2021-23017 is a critical buffer overflow vulnerability in nginx versions prior to 1.25.3. CVSS score: 9.8 (CRITICAL). The vulnerability in nginx's DNS resolver allows a remote attacker to cause a one-byte heap overflow, potentially enabling remote code execution. QUANTUM-ARES maps this to MITRE T1190 (Exploit Public-Facing Application). Fix: upgrade to nginx:1.25.3 or later.",
+    "source": "NVD CVE-2021-23017 — nginx resolver vulnerability"
+  },
+  {
+    "question": "What is the difference between QUANTUM-ARES and Wiz?",
+    "answer": "Wiz scans running infrastructure AFTER deployment — it detects attackers already inside. QUANTUM-ARES validates infrastructure blueprints BEFORE deployment — it prevents attackers from ever getting in. Different lifecycle, not competing products. QUANTUM-ARES also adds: confidence-aware input validation, Quantum Vulnerability Index, Indian compliance mapping (DPDP/RBI), and blockchain-anchored reports.",
+    "source": "QUANTUM-ARES Product Differentiation"
+  }
+]

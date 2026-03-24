@@ -1,0 +1,109 @@
+{
+  "nodes": [
+    {
+      "id": "internet_gateway",
+      "type": "gateway",
+      "zone": "PUBLIC",
+      "data_sensitivity": "LOW",
+      "encryption_type": "none",
+      "container_image": "nginx:1.20.1"
+    },
+    {
+      "id": "web_server",
+      "type": "server",
+      "zone": "PUBLIC",
+      "data_sensitivity": "LOW",
+      "encryption_type": "AES-256",
+      "container_image": "nginx:1.20.1"
+    },
+    {
+      "id": "app_server",
+      "type": "server",
+      "zone": "DMZ",
+      "data_sensitivity": "MEDIUM",
+      "encryption_type": "AES-256"
+    },
+    {
+      "id": "patient_db",
+      "type": "database",
+      "zone": "PRIVATE",
+      "data_sensitivity": "CRITICAL",
+      "encryption_type": "none",
+      "retention_years": 15
+    },
+    {
+      "id": "billing_db",
+      "type": "database",
+      "zone": "PRIVATE",
+      "data_sensitivity": "HIGH",
+      "encryption_type": "unknown",
+      "retention_years": 7
+    },
+    {
+      "id": "admin_panel",
+      "type": "admin",
+      "zone": "PUBLIC",
+      "data_sensitivity": "HIGH",
+      "iam_roles": ["arn:aws:iam::*:role/*"],
+      "encryption_type": "AES-256"
+    },
+    {
+      "id": "credential_store",
+      "type": "credential_store",
+      "zone": "PRIVATE",
+      "data_sensitivity": "CRITICAL",
+      "encryption_type": "RSA-2048",
+      "retention_years": 10
+    }
+  ],
+  "edges": [
+    {
+      "source": "internet_gateway",
+      "target": "web_server",
+      "auth_required": false,
+      "mfa_required": false,
+      "tls_enforced": true,
+      "access_scope": "FULL"
+    },
+    {
+      "source": "web_server",
+      "target": "app_server",
+      "auth_required": true,
+      "mfa_required": false,
+      "tls_enforced": true,
+      "access_scope": "SCOPED"
+    },
+    {
+      "source": "app_server",
+      "target": "patient_db",
+      "auth_required": false,
+      "mfa_required": false,
+      "tls_enforced": false,
+      "access_scope": "FULL"
+    },
+    {
+      "source": "app_server",
+      "target": "billing_db",
+      "auth_required": true,
+      "mfa_required": false,
+      "tls_enforced": true,
+      "access_scope": "SCOPED"
+    },
+    {
+      "source": "admin_panel",
+      "target": "patient_db",
+      "auth_required": false,
+      "mfa_required": false,
+      "tls_enforced": false,
+      "access_scope": "FULL"
+    },
+    {
+      "source": "admin_panel",
+      "target": "credential_store",
+      "auth_required": true,
+      "mfa_required": false,
+      "tls_enforced": true,
+      "access_scope": "FULL"
+    }
+  ]
+}

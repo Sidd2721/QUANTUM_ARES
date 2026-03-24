@@ -1,0 +1,68 @@
+{
+  "nodes": [
+    {
+      "id": "api_gateway",
+      "type": "gateway",
+      "zone": "PUBLIC",
+      "data_sensitivity": "LOW",
+      "encryption_type": "AES-256"
+    },
+    {
+      "id": "core_banking",
+      "type": "server",
+      "zone": "PRIVATE",
+      "data_sensitivity": "CRITICAL",
+      "encryption_type": "RSA-2048",
+      "retention_years": 10
+    },
+    {
+      "id": "transaction_db",
+      "type": "database",
+      "zone": "PRIVATE",
+      "data_sensitivity": "CRITICAL",
+      "encryption_type": "none",
+      "retention_years": 10
+    },
+    {
+      "id": "admin_console",
+      "type": "admin",
+      "zone": "PUBLIC",
+      "data_sensitivity": "HIGH",
+      "iam_roles": ["arn:aws:iam::*:role/*"]
+    },
+    {
+      "id": "audit_log",
+      "type": "database",
+      "zone": "RESTRICTED",
+      "data_sensitivity": "HIGH",
+      "encryption_type": "AES-256",
+      "retention_years": 5
+    }
+  ],
+  "edges": [
+    {
+      "source": "api_gateway",
+      "target": "core_banking",
+      "auth_required": false,
+      "mfa_required": false,
+      "tls_enforced": true,
+      "access_scope": "FULL"
+    },
+    {
+      "source": "core_banking",
+      "target": "transaction_db",
+      "auth_required": true,
+      "mfa_required": false,
+      "tls_enforced": false,
+      "access_scope": "FULL"
+    },
+    {
+      "source": "admin_console",
+      "target": "transaction_db",
+      "auth_required": false,
+      "mfa_required": false,
+      "tls_enforced": false,
+      "access_scope": "FULL"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+@import "tailwindcss";
+@import "./theme.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body { 
+  font-family: 'DM Sans', sans-serif; 
+  background: var(--bg-base); 
+  color: var(--text-primary); 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3 { 
+  font-family: 'Syne', sans-serif; 
+}
+
+code, .mono, .scan-id, .score-number { 
+  font-family: 'JetBrains Mono', monospace; 
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
+
+/* Skeleton loading shimmer */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-elevated) 50%, var(--bg-surface) 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* Card base */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  transition: border-color 200ms ease;
+}
+.card:hover { border-color: var(--border-default); }
+
+/* Severity left borders */
+.severity-critical { border-left: 4px solid var(--critical); }
+.severity-high     { border-left: 4px solid var(--high); }
+.severity-medium   { border-left: 4px solid var(--medium); }
+.severity-low      { border-left: 4px solid var(--low); }
+
+/* Score colors */
+.score-ring-critical { stroke: var(--critical); }
+.score-ring-high     { stroke: var(--high); }
+.score-ring-medium   { stroke: var(--medium); }
+.score-ring-low      { stroke: var(--cyan-400); }
+
+/* Custom utility for animated SVGs */
+@keyframes pulse-node { 0%,100% { opacity:0.8; r:8px; } 50% { opacity:1; r:10px; } }
+.animate-pulse-node { animation: pulse-node 4s ease-in-out infinite; }
+
+@keyframes flow-edge {
+  to { stroke-dashoffset: -20; }
+}
+.animate-flow-edge {
+  animation: flow-edge 1s linear infinite;
+}

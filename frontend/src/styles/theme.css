@@ -1,0 +1,54 @@
+:root {
+  /* Backgrounds — layered depth */
+  --bg-base:      #05070F;   /* deepest black-blue, page background */
+  --bg-surface:   #0C1120;   /* card surfaces */
+  --bg-elevated:  #111827;   /* hover states, selected items */
+  --bg-overlay:   #1A2235;   /* modals, dropdowns */
+
+  /* Primary — electric cyan (trust, precision) */
+  --cyan-400:     #22D3EE;
+  --cyan-500:     #06B6D4;
+  --cyan-600:     #0891B2;
+  --cyan-glow:    rgba(34, 211, 238, 0.15);
+
+  /* Severity — unmistakable at a glance */
+  --critical:     #FF3B3B;
+  --critical-bg:  rgba(255, 59, 59, 0.10);
+  --high:         #FF8C00;
+  --high-bg:      rgba(255, 140, 0, 0.10);
+  --medium:       #FBBF24;
+  --medium-bg:    rgba(251, 191, 36, 0.10);
+  --low:          #34D399;
+  --low-bg:       rgba(52, 211, 153, 0.10);
+
+  /* Engine colors — consistent identity */
+  --zt-color:     #818CF8;   /* violet — Zero Trust */
+  --q-color:      #F472B6;   /* pink — Quantum */
+  --ap-color:     #FB923C;   /* orange — Attack Path */
+  --sc-color:     #34D399;   /* green — Supply Chain */
+  --comp-color:   #60A5FA;   /* blue — Compliance */
+
+  /* Zone colors — graph nodes */
+  --zone-public:     #EF4444;
+  --zone-dmz:        #F97316;
+  --zone-internal:   #3B82F6;
+  --zone-private:    #8B5CF6;
+  --zone-restricted: #EC4899;
+
+  /* Text */
+  --text-primary:   #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted:     #475569;
+  --text-accent:    #22D3EE;
+
+  /* Borders */
+  --border-subtle:  rgba(148, 163, 184, 0.08);
+  --border-default: rgba(148, 163, 184, 0.15);
+  --border-accent:  rgba(34, 211, 238, 0.30);
+
+  /* Score ring colors */
+  --score-critical: #EF4444;  /* 0-39 */
+  --score-high:     #F97316;  /* 40-59 */
+  --score-medium:   #FBBF24;  /* 60-79 */
+  --score-low:      #22D3EE;  /* 80-100 */
+}

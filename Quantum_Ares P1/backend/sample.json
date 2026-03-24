@@ -1,0 +1,47 @@
+{
+  "nodes": [
+    {
+      "id": "internet",
+      "type": "gateway",
+      "zone": "PUBLIC"
+    },
+    {
+      "id": "web_server",
+      "type": "server",
+      "zone": "DMZ",
+      "container_image": "nginx:1.20.1"
+    },
+    {
+      "id": "app_server",
+      "type": "server",
+      "zone": "INTERNAL"
+    },
+    {
+      "id": "database",
+      "type": "database",
+      "zone": "PRIVATE",
+      "data_sensitivity": "CRITICAL",
+      "encryption_type": "none",
+      "retention_years": 10
+    }
+  ],
+  "edges": [
+    {
+      "source": "internet",
+      "target": "web_server",
+      "auth_required": false,
+      "tls_enforced": false
+    },
+    {
+      "source": "web_server",
+      "target": "app_server",
+      "auth_required": false
+    },
+    {
+      "source": "app_server",
+      "target": "database",
+      "auth_required": false,
+      "mfa_required": false
+    }
+  ]
+}

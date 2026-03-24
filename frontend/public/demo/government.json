@@ -1,0 +1,78 @@
+{
+  "nodes": [
+    {
+      "id": "citizen_portal",
+      "type": "gateway",
+      "zone": "PUBLIC",
+      "data_sensitivity": "LOW",
+      "encryption_type": "AES-256",
+      "container_image": "nginx:1.20.1"
+    },
+    {
+      "id": "aadhaar_service",
+      "type": "server",
+      "zone": "DMZ",
+      "data_sensitivity": "CRITICAL",
+      "encryption_type": "RSA-2048",
+      "retention_years": 20
+    },
+    {
+      "id": "citizen_records",
+      "type": "database",
+      "zone": "PRIVATE",
+      "data_sensitivity": "CRITICAL",
+      "encryption_type": "unknown",
+      "retention_years": 20
+    },
+    {
+      "id": "tax_records",
+      "type": "database",
+      "zone": "PRIVATE",
+      "data_sensitivity": "HIGH",
+      "encryption_type": "none",
+      "retention_years": 15
+    },
+    {
+      "id": "internal_admin",
+      "type": "admin",
+      "zone": "PRIVATE",
+      "data_sensitivity": "CRITICAL",
+      "iam_roles": ["arn:aws:iam::*:role/*"],
+      "encryption_type": "AES-256"
+    }
+  ],
+  "edges": [
+    {
+      "source": "citizen_portal",
+      "target": "aadhaar_service",
+      "auth_required": false,
+      "mfa_required": false,
+      "tls_enforced": true,
+      "access_scope": "SCOPED"
+    },
+    {
+      "source": "aadhaar_service",
+      "target": "citizen_records",
+      "auth_required": true,
+      "mfa_required": false,
+      "tls_enforced": false,
+      "access_scope": "FULL"
+    },
+    {
+      "source": "citizen_portal",
+      "target": "tax_records",
+      "auth_required": false,
+      "mfa_required": false,
+      "tls_enforced": false,
+      "access_scope": "FULL"
+    },
+    {
+      "source": "internal_admin",
+      "target": "citizen_records",
+      "auth_required": true,
+      "mfa_required": false,
+      "tls_enforced": true,
+      "access_scope": "FULL"
+    }
+  ]
+}

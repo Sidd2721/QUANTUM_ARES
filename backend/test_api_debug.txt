@@ -1,0 +1,16 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\avadu\OneDrive\Desktop\Quantum_Ares\backend\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\avadu\OneDrive\Desktop\Quantum_Ares\backend
+plugins: anyio-4.12.1
+collecting ... collected 7 items
+
+tests/test_api.py::test_health_returns_ok PASSED                         [ 14%]
+tests/test_api.py::test_login_valid_credentials PASSED                   [ 28%]
+tests/test_api.py::test_login_wrong_password_returns_401 PASSED          [ 42%]
+tests/test_api.py::test_login_nonexistent_user_returns_401 PASSED        [ 57%]
+tests/test_api.py::test_protected_route_without_token_returns_422 PASSED [ 71%]
+tests/test_api.py::test_protected_route_with_invalid_token_returns_401 PASSED [ 85%]
+tests/test_api.py::test_upload_and_poll_full_cycle PASSED                [100%]
+
+============================== 7 passed in 4.13s ==============================

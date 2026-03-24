@@ -1,0 +1,58 @@
+{
+  "ZT-003": {
+    "title": "Enable Encryption at Rest",
+    "score_impact": "+20",
+    "difficulty": "easy",
+    "terraform": {
+      "file": "main.tf",
+      "instructions": "Add KMS key and enable storage_encrypted on the database resource.",
+      "content": "resource \"aws_kms_key\" \"{node_id}_key\" {\n  description             = \"KMS key for {node_id} encryption at rest\"\n  enable_key_rotation     = true\n  deletion_window_in_days = 7\n}\n\nresource \"aws_db_instance\" \"{node_id}\" {\n  storage_encrypted = true\n  kms_key_id        = aws_kms_key.{node_id}_key.arn\n}"
+    }
+  },
+  "SC-001": {
+    "title": "Upgrade Container Image",
+    "score_impact": "+30",
+    "difficulty": "easy",
+    "kubernetes": {
+      "file": "deployment.yaml",
+      "instructions": "Update the image tag to the patched version to resolve the CVE.",
+      "content": "# In your deployment.yaml, update:\nimage: {fix_version}  # Patched — CVE resolved\n# Then apply: kubectl apply -f deployment.yaml"
+    }
+  },
+  "ZT-004": {
+    "title": "Enforce MFA on Sensitive Access",
+    "score_impact": "+15",
+    "difficulty": "medium",
+    "iam": {
+      "file": "iam_policy.json",
+      "instructions": "Add MFA condition to enforce MFA for access to this resource.",
+      "content": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"Bool\": {\"aws:MultiFactorAuthPresent\": \"true\"}\n    }\n  }]\n}"
+    }
+  },
+  "ZT-001": {
+    "title": "Add Authentication Gateway",
+    "score_impact": "+25",
+    "difficulty": "medium",
+    "terraform": {
+      "file": "main.tf",
+      "instructions": "Add API Gateway with Cognito Authorizer between PUBLIC and PRIVATE zones.",
+      "content": "resource \"aws_api_gateway_rest_api\" \"{node_id}_gateway\" {\n  name        = \"{node_id}-auth-gateway\"\n  description = \"Authentication gateway — blocks unauthenticated PUBLIC to PRIVATE access\"\n}\n\nresource \"aws_api_gateway_authorizer\" \"{node_id}_auth\" {\n  name          = \"CognitoAuthorizer\"\n  rest_api_id   = aws_api_gateway_rest_api.{node_id}_gateway.id\n  type          = \"COGNITO_USER_POOLS\"\n  provider_arns = [aws_cognito_user_pool.main.arn]\n}"
+    }
+  },
+  "Q-001": {
+    "title": "Migrate to ML-KEM-768 (Post-Quantum)",
+    "score_impact": "+40",
+    "difficulty": "hard",
+    "notes": "Replace RSA/ECC key exchange with ML-KEM-768 (NIST FIPS 203, August 2024). This protects against HNDL attacks — nation-states recording your encrypted data today for future quantum decryption. Timeline: 3-6 month migration. Reference: https://csrc.nist.gov/pubs/fips/203/final"
+  },
+  "ZT-005": {
+    "title": "Remove Wildcard IAM Permissions",
+    "score_impact": "+18",
+    "difficulty": "medium",
+    "iam": {
+      "file": "iam_policy.json",
+      "instructions": "Replace wildcard (*) actions with specific least-privilege actions.",
+      "content": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": [\n      \"s3:GetObject\",\n      \"s3:PutObject\",\n      \"rds:DescribeDBInstances\",\n      \"rds:Connect\"\n    ],\n    \"Resource\": [\n      \"arn:aws:s3:::your-bucket/*\",\n      \"arn:aws:rds:region:account:db:{node_id}\"\n    ]\n  }]\n}"
+    }
+  }
+}

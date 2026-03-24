@@ -1,0 +1,22 @@
+fastapi
+uvicorn
+python-multipart
+
+# Auth
+passlib[bcrypt]
+python-jose
+
+# Database
+pymongo
+
+# Parsing
+pyyaml
+
+# Graph Engine
+networkx
+
+# Optional (AI)
+openai
+
+# Dev (optional but useful)
+python-dotenv
